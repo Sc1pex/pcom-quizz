@@ -1,7 +1,9 @@
 import os
 import json
 import sqlite3
-from flask import Flask, send_from_directory, request, jsonify, render_template, session, redirect, url_for
+import hashlib
+import subprocess
+from flask import Flask, send_from_directory, request, jsonify, render_template, session, redirect, url_for, send_file
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
@@ -166,6 +168,27 @@ def delete_quiz(quiz_id):
     conn.close()
     
     return jsonify({'status': 'success'})
+
+@app.route('/api/tts', methods=['POST'])
+def generate_tts():
+    data = request.json
+    text = data.get('text', '')
+    if not text:
+        return jsonify({'error': 'No text provided'}), 400
+        
+    # Generate unique filename based on hash of the text
+    text_hash = hashlib.md5(text.encode('utf-8')).hexdigest()
+    os.makedirs('tts_cache', exist_ok=True)
+    filename = os.path.join('tts_cache', f'{text_hash}.mp3')
+    
+    if not os.path.exists(filename):
+        # Generate using edge-tts
+        try:
+            subprocess.run(["edge-tts", "--voice", "ro-RO-EmilNeural", "--text", text, "--write-media", filename], check=True)
+        except subprocess.CalledProcessError as e:
+            return jsonify({'error': 'TTS generation failed'}), 500
+            
+    return send_file(filename, mimetype="audio/mpeg")
 
 if __name__ == '__main__':
     init_db()
