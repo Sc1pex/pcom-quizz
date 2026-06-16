@@ -1,6 +1,6 @@
 const quizzes = [
     {
-        "question": "Care este principala funcție a nivelului Legătură de Date (Data Link)?",
+        "question": "Care este principală funcție a nivelului Legătură de Date (Data Link)?",
         "options": [
             "Alegerea celei mai bune rute prin rețea.",
             "Garantarea transmiterii cadrelor fără erori între două mașini conectate direct.",
@@ -26,7 +26,7 @@ const quizzes = [
         "searchKeyword": "reglare a fluxului de date"
     },
     {
-        "question": "În metoda de încadrare (framing) folosind stegulețe (flags) cu bit stuffing, ce se întâmplă când în datele utile apare secvența care seamănă cu stegulețul (ex. șase de 1)?",
+        "question": "În metodă de încadrare (framing) folosind stegulețe (flags) cu bit stuffing, ce se întâmplă când în datele utile apare secvența care seamănă cu stegulețul (ex. șase de 1)?",
         "options": [
             "Pachetul este aruncat și se cere retransmisia.",
             "Emițătorul inserează forțat un bit de 0 după fiecare cinci biți de 1 din datele utile.",
@@ -55,12 +55,12 @@ const quizzes = [
         "question": "Care este diferența majoră dintre o subrețea cu circuite virtuale și una datagramă?",
         "options": [
             "Circuitele virtuale sunt exclusiv analogice, iar datagramele digitale.",
-            "La datagrame, ruta este stabilită o singură dată la inițializare, în timp ce la circuite virtuale fiecare pachet alege o rută nouă.",
+            "La datagrame, rută este stabilită o singură dată la inițializare, în timp ce la circuite virtuale fiecare pachet alege o rută nouă.",
             "La circuite virtuale se stabilește în avans o cale fixă prin rețea pe care o vor urma toate pachetele, pe când la datagrame fiecare pachet este dirijat independent.",
             "Nu există nicio diferență la nivelul rutelor, diferă doar dimensiunea pachetului."
         ],
         "correctIndex": 2,
-        "explanation": "O subrețea cu circuite virtuale creează o conexiune logică înainte de a trimite datele. Într-o rețea datagramă, fiecare pachet își găsește singur drumul pe baza adresei.",
+        "explanation": "O subrețea cu circuite virtuale creează o conexiune logică înainte de a trimite datele. Într-o rețea datagramă, fiecare pachet își găsește singur drumul pe bază adresei.",
         "chapterRef": 8,
         "searchKeyword": "circuite virtuale"
     },
@@ -82,7 +82,7 @@ const quizzes = [
         "options": [
             "Pentru că se execută mai rapid din software.",
             "Pentru că scurtează dimensiunea pachetului.",
-            "Pentru că poate corecta orice număr de erori, nu doar să le detecteze.",
+            "Pentru că poate corectă orice număr de erori, nu doar să le detecteze.",
             "Pentru că are o probabilitate mult mai mare să detecteze erori în rafală (burst errors)."
         ],
         "correctIndex": 3,
@@ -130,7 +130,7 @@ const quizzes = [
         "searchKeyword": "Time to live"
     },
     {
-        "question": "În protocoalele de dirijare Vector-Distanță (Distance Vector), ce este 'Problema Numărării la Infinit' (Count-to-Infinity)?",
+        "question": "În protocoalele de dirijare Vector-Distanță (Distance Vector), ce este 'Problemă Numărării la Infinit' (Count-to-Infinity)?",
         "options": [
             "Routerele își trimit tabelele de rutare atât de des încât blochează rețeaua.",
             "Ruterele cresc costul unui drum spre o rețea picată în mod continuu, raportându-și rute false unul altuia, până când distanța atinge 'infinitul'.",
@@ -145,13 +145,13 @@ const quizzes = [
     {
         "question": "Cum funcționează protocolul ARP (Address Resolution Protocol)?",
         "options": [
-            "Interoghează un server DNS pentru a găsi adresa IP a unui nume de domeniu.",
-            "Trimite un pachet de difuzare (broadcast) întrebând 'Cine are acest IP?' pentru a obține adresa MAC (Ethernet) corespunzătoare.",
+            "Interoghează un server DNS pentru a găsi adresă IP a unui nume de domeniu.",
+            "Trimite un pachet de difuzare (broadcast) întrebând 'Cine are acest IP?' pentru a obține adresă MAC (Ethernet) corespunzătoare.",
             "Alocă automat o adresă IP dinamică mașinilor nou conectate în rețea.",
             "Criptează datele de la nivelul Fizic înainte de a le transmite pe fir."
         ],
         "correctIndex": 1,
-        "explanation": "ARP difuzează un mesaj cerând adresa fizică (MAC) a dispozitivului care deține o anumită adresă logică (IP).",
+        "explanation": "ARP difuzează un mesaj cerând adresă fizică (MAC) a dispozitivului care deține o anumită adresă logică (IP).",
         "chapterRef": 18,
         "searchKeyword": "Cine este proprietarul"
     },
@@ -182,7 +182,7 @@ const quizzes = [
         "searchKeyword": "NAT"
     },
     {
-        "question": "Care este principala caracteristică a protocolului ICMP?",
+        "question": "Care este principală caracteristică a protocolului ICMP?",
         "options": [
             "Este responsabil de stabilirea conexiunilor în trei pași (3-way handshake).",
             "Folosește algoritmi de rutare pentru a actualiza tabelele BGP.",
@@ -268,7 +268,7 @@ const quizzes = [
             "Forțând nivelul aplicație să trimită un număr constant de pachete pe secundă."
         ],
         "correctIndex": 1,
-        "explanation": "TCP este 'politicos' – când detectează pachete pierdute (lipsa ACK-ului), presupune că e congestie și își înjumătățește viteza, apoi crește lent înapoi.",
+        "explanation": "TCP este 'politicos' – când detectează pachete pierdute (lipsă ACK-ului), presupune că e congestie și își înjumătățește viteza, apoi crește lent înapoi.",
         "chapterRef": 26,
         "searchKeyword": "TCP"
     },
@@ -328,7 +328,7 @@ const quizzes = [
         "question": "Care este slăbiciunea majoră a criptografiei cu Cheie Secretă (simetrică)?",
         "options": [
             "Viteza extrem de redusă a procesoarelor hardware la decriptare.",
-            "Problema 'distribuirii cheilor': Alice și Bob trebuie cumva să cadă de acord și să-și transmită cheia secretă prin alt mediu 100% sigur.",
+            "Problemă 'distribuirii cheilor': Alice și Bob trebuie cumva să cadă de acord și să-și transmită cheia secretă prin alt mediu 100% sigur.",
             "Cifrul se poate sparge mereu în mai puțin de o oră.",
             "Necesită conectivitate constantă cu un server de certificate (CA)."
         ],
@@ -364,7 +364,7 @@ const quizzes = [
         "searchKeyword": "RECEIVE READY"
     },
     {
-        "question": "Cum rezolvă algoritmii cu fereastră glisantă problema duplicatelor cauzate de o confirmare pierdută?",
+        "question": "Cum rezolvă algoritmii cu fereastră glisantă problemă duplicatelor cauzate de o confirmare pierdută?",
         "options": [
             "Receptorul ghicește inteligent dacă pachetul e duplicat din payload-ul său.",
             "Folosind Numere de Secvență în antetul fiecărui cadru.",
