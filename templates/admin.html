@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrare Întrebări - Rețele</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #818cf8;
+            --accent-hover: #6366f1;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            --blur: blur(12px);
+            --transition-speed: 0.2s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
+        }
+
+        header {
+            background: var(--surface-color);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--surface-border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--surface-border);
+            padding: 10px 16px;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 12px;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-edit {
+            background-color: rgba(129, 140, 248, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            padding: 8px 12px;
+        }
+
+        .btn-edit:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .search-container {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all var(--transition-speed);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+        }
+
+        .stats {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question-card {
+            background: var(--surface-color);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--surface-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .question-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .question-id {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: monospace;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .options-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .options-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-item {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-item.correct {
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.08);
+            color: #34d399;
+        }
+
+        .option-marker {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .option-item.correct .option-marker {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .explanation-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--accent-color);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid var(--surface-border);
+            padding-top: 16px;
+        }
+
+        /* Modal styling */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-speed) ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid var(--surface-border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(20px) scale(0.98); }
+            to { transform: translateY(0) scale(1); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--surface-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            line-height: 1;
+            padding: 4px;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all var(--transition-speed);
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .radio-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+
+        .radio-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .radio-checkmark {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .radio-container input:checked ~ .radio-checkmark {
+            border-color: var(--success-color);
+            background-color: var(--success-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .radio-checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .radio-container input:checked ~ .radio-checkmark:after {
+            display: block;
+        }
+
+        .radio-container .radio-checkmark:after {
+            left: 8px;
+            top: 4px;
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--surface-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Toast feedback */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: #1e293b;
+            border: 1px solid var(--surface-border);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--surface-color);
+            border: 1px dashed var(--surface-border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>🛠️ Panou Administrare Întrebări</h1>
+            <div class="header-actions">
+                <a href="/" class="btn-secondary" style="text-decoration: none;">🏠 Mergi la Site</a>
+                <button id="add-quiz-btn" class="btn-primary">➕ Adaugă Întrebare</button>
+                <form action="/admin/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-secondary" style="color: var(--danger-color); border-color: rgba(239, 68, 68, 0.2);">🚪 Deconectare</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Caută întrebare după cuvinte cheie..." autocomplete="off">
+        </div>
+
+        <div class="stats">
+            <span id="question-count">Se încarcă întrebările...</span>
+        </div>
+
+        <div id="questions-container" class="questions-list">
+            <!-- Questions dynamically populated -->
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="quiz-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Adaugă Întrebare Nouă</h2>
+                <button class="close-modal" id="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="quiz-id">
+                
+                <div class="form-group">
+                    <label for="form-question">Întrebarea</label>
+                    <textarea id="form-question" rows="3" placeholder="Scrie textul întrebării aici..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Opțiuni de răspuns (Bifează varianta corectă)</label>
+                    
+                    <div class="option-row">
+                        <label class="radio-container" title="Bifează dacă este răspunsul corect">
+                            <input type="radio" name="form-correct" value="0" checked>
+                            <span class="radio-checkmark"></span>
+                        </label>
+                        <input type="text" id="form-opt-0" placeholder="Varianta A" required>
+                    </div>
+
+                    <div class="option-row">
+                        <label class="radio-container" title="Bifează dacă este răspunsul corect">
+                            <input type="radio" name="form-correct" value="1">
+                            <span class="radio-checkmark"></span>
+                        </label>
+                        <input type="text" id="form-opt-1" placeholder="Varianta B" required>
+                    </div>
+
+                    <div class="option-row">
+                        <label class="radio-container" title="Bifează dacă este răspunsul corect">
+                            <input type="radio" name="form-correct" value="2">
+                            <span class="radio-checkmark"></span>
+                        </label>
+                        <input type="text" id="form-opt-2" placeholder="Varianta C" required>
+                    </div>
+
+                    <div class="option-row">
+                        <label class="radio-container" title="Bifează dacă este răspunsul corect">
+                            <input type="radio" name="form-correct" value="3">
+                            <span class="radio-checkmark"></span>
+                        </label>
+                        <input type="text" id="form-opt-3" placeholder="Varianta D" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-explanation">Explicație răspuns (Opțional)</label>
+                    <textarea id="form-explanation" rows="2" placeholder="Explică succint de ce este corect acest răspuns..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-cancel" class="btn-secondary">Anulează</button>
+                <button id="btn-save" class="btn-primary">Salvează</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        let allQuizzes = [];
+
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const questionCount = document.getElementById('question-count');
+        const searchInput = document.getElementById('search-input');
+        
+        // Modal elements
+        const quizModal = document.getElementById('quiz-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const addQuizBtn = document.getElementById('add-quiz-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const btnCancel = document.getElementById('btn-cancel');
+        const btnSave = document.getElementById('btn-save');
+        
+        // Form fields
+        const formId = document.getElementById('quiz-id');
+        const formQuestion = document.getElementById('form-question');
+        const formOpt0 = document.getElementById('form-opt-0');
+        const formOpt1 = document.getElementById('form-opt-1');
+        const formOpt2 = document.getElementById('form-opt-2');
+        const formOpt3 = document.getElementById('form-opt-3');
+        const formExplanation = document.getElementById('form-explanation');
+
+        // Fetch all quizzes from DB
+        async function fetchQuizzes() {
+            try {
+                const res = await fetch('/api/quizzes');
+                if (res.ok) {
+                    allQuizzes = await res.json();
+                    renderQuizzes(allQuizzes);
+                } else {
+                    showToast('Eroare la încărcarea întrebărilor.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Eroare de rețea la încărcarea întrebărilor.', 'error');
+            }
+        }
+
+        // Render quizzes to list
+        function renderQuizzes(quizzes) {
+            questionsContainer.innerHTML = '';
+            
+            // Filter custom questions that have IDs (meaning they are in the SQLite database)
+            // Note: the Flask API returns questions from the DB. 
+            // In case there are questions without IDs, we display them, but focus on the database ones.
+            const dbQuizzes = quizzes.filter(q => q.id !== undefined);
+            
+            questionCount.textContent = `Total întrebări în baza de date: ${dbQuizzes.length}`;
+
+            if (dbQuizzes.length === 0) {
+                questionsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📂</div>
+                        <h3 class="empty-title">Nu există întrebări personalizate</h3>
+                        <p>Baza de date este momentan goală. Adaugă o întrebare folosind butonul din colțul dreapta-sus.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            dbQuizzes.forEach((quiz, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.setAttribute('data-id', quiz.id);
+
+                const optionLetters = ['A', 'B', 'C', 'D'];
+                const optionsHtml = quiz.options.map((opt, oIdx) => {
+                    const isCorrect = oIdx === quiz.correctIndex;
+                    return `
+                        <div class="option-item ${isCorrect ? 'correct' : ''}">
+                            <span class="option-marker">${optionLetters[oIdx]}</span>
+                            <span>${escapeHtml(opt)}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                const explanationHtml = quiz.explanation 
+                    ? `<div class="explanation-box"><strong>Explicație:</strong> ${escapeHtml(quiz.explanation)}</div>`
+                    : '';
+
+                card.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-title">${index + 1}. ${escapeHtml(quiz.question)}</div>
+                        <span class="question-id">ID: ${quiz.id}</span>
+                    </div>
+                    <div class="options-list">
+                        ${optionsHtml}
+                    </div>
+                    ${explanationHtml}
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="openEditModal(${quiz.id})">✏️ Editează</button>
+                        <button class="btn-danger" onclick="deleteQuiz(${quiz.id})">🗑️ Șterge</button>
+                    </div>
+                `;
+
+                questionsContainer.appendChild(card);
+            });
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Search/Filter logic
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            if (!term) {
+                renderQuizzes(allQuizzes);
+                return;
+            }
+
+            const filtered = allQuizzes.filter(q => {
+                const qText = q.question.toLowerCase();
+                const qExpl = (q.explanation || '').toLowerCase();
+                const qOpts = q.options.join(' ').toLowerCase();
+                return qText.includes(term) || qExpl.includes(term) || qOpts.includes(term);
+            });
+
+            renderQuizzes(filtered);
+        });
+
+        // Toast notifications utility
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span>${type === 'success' ? '✅' : '⚠️'}</span>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('active'), 10);
+            
+            // Remove after 3.5 seconds
+            setTimeout(() => {
+                toast.classList.remove('active');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Modal triggers
+        function openAddModal() {
+            modalTitle.textContent = "Adaugă Întrebare Nouă";
+            formId.value = "";
+            formQuestion.value = "";
+            formOpt0.value = "";
+            formOpt1.value = "";
+            formOpt2.value = "";
+            formOpt3.value = "";
+            formExplanation.value = "";
+            document.querySelector('input[name="form-correct"][value="0"]').checked = true;
+            
+            quizModal.classList.add('active');
+            formQuestion.focus();
+        }
+
+        function openEditModal(id) {
+            const quiz = allQuizzes.find(q => q.id === id);
+            if (!quiz) return;
+
+            modalTitle.textContent = `Editează Întrebarea (ID: ${id})`;
+            formId.value = quiz.id;
+            formQuestion.value = quiz.question;
+            formOpt0.value = quiz.options[0] || '';
+            formOpt1.value = quiz.options[1] || '';
+            formOpt2.value = quiz.options[2] || '';
+            formOpt3.value = quiz.options[3] || '';
+            formExplanation.value = quiz.explanation || '';
+            
+            const correctRadio = document.querySelector(`input[name="form-correct"][value="${quiz.correctIndex}"]`);
+            if (correctRadio) correctRadio.checked = true;
+
+            quizModal.classList.add('active');
+            formQuestion.focus();
+        }
+
+        function closeModal() {
+            quizModal.classList.remove('active');
+        }
+
+        // Delete action
+        async function deleteQuiz(id) {
+            if (!confirm('Sigur doriți să ștergeți această întrebare? Această acțiune este ireversibilă.')) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/quizzes/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (res.ok) {
+                    showToast('Întrebarea a fost ștearsă cu succes.');
+                    fetchQuizzes();
+                } else {
+                    const data = await res.json();
+                    showToast(data.error || 'Eroare la ștergerea întrebării.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Eroare de rețea la ștergerea întrebării.', 'error');
+            }
+        }
+
+        // Save (Add / Update) action
+        btnSave.addEventListener('click', async () => {
+            const questionVal = formQuestion.value.trim();
+            const opts = [
+                formOpt0.value.trim(),
+                formOpt1.value.trim(),
+                formOpt2.value.trim(),
+                formOpt3.value.trim()
+            ];
+            const explanationVal = formExplanation.value.trim();
+            const correctRadio = document.querySelector('input[name="form-correct"]:checked');
+            const correctIdx = correctRadio ? parseInt(correctRadio.value) : 0;
+            const idVal = formId.value;
+
+            // Validation
+            if (!questionVal) {
+                showToast('Te rog completează întrebarea.', 'error');
+                formQuestion.focus();
+                return;
+            }
+            if (opts.some(o => !o)) {
+                showToast('Te rog completează toate cele 4 opțiuni de răspuns.', 'error');
+                return;
+            }
+
+            const payload = {
+                question: questionVal,
+                options: opts,
+                correctIndex: correctIdx,
+                explanation: explanationVal || null
+            };
+
+            const isEdit = idVal !== "";
+            const url = isEdit ? `/api/quizzes/${idVal}` : '/api/quizzes';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    showToast(isEdit ? 'Întrebarea a fost actualizată.' : 'Întrebarea a fost adăugată.');
+                    closeModal();
+                    fetchQuizzes();
+                } else {
+                    const data = await res.json();
+                    showToast(data.error || 'Eroare la salvarea întrebării.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Eroare de rețea la salvarea întrebării.', 'error');
+            }
+        });
+
+        // Event listeners
+        addQuizBtn.addEventListener('click', openAddModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        btnCancel.addEventListener('click', closeModal);
+
+        // Close on clicking outside modal content
+        window.addEventListener('click', (e) => {
+            if (e.target === quizModal) {
+                closeModal();
+            }
+        });
+
+        // Initial fetch
+        fetchQuizzes();
+    </script>
+</body>
+</html>

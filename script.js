@@ -308,10 +308,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function initQuizzes() {
         let customQuizzes = [];
+        let fetchedFromBackend = false;
         try {
             const res = await fetch('/api/quizzes');
-            if (res.ok) customQuizzes = await res.json();
-            else throw new Error("API failed");
+            if (res.ok) {
+                customQuizzes = await res.json();
+                fetchedFromBackend = true;
+            } else throw new Error("API failed");
         } catch (e) {
             console.warn("Backend API not found, falling back to localStorage.");
             try {
@@ -320,7 +323,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const defaultQuizzes = typeof quizzes !== 'undefined' ? quizzes : [];
-        combinedQuizzes = [...defaultQuizzes, ...customQuizzes];
+        if (fetchedFromBackend && customQuizzes.length > 0) {
+            combinedQuizzes = customQuizzes;
+        } else {
+            combinedQuizzes = [...defaultQuizzes, ...customQuizzes];
+        }
         
         renderQuizzOverview();
     }
