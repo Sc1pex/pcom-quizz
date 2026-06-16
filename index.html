@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rețele de Calculatoare - Cititor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h1>📚 Rețele</h1>
+            </div>
+            <nav id="chapter-list" class="chapter-list">
+                <!-- Chapters will be injected here -->
+            </nav>
+        </aside>
+        
+        <main id="main-content" class="main-content">
+            <div class="top-bar-container">
+                <div id="progress-container">
+                    <div id="reading-progress"></div>
+                </div>
+                <div class="top-bar">
+                    <button id="toggle-sidebar" class="icon-button" aria-label="Afișează/Ascunde meniul" title="Ascunde capitolele">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="top-actions">
+                        <button id="quizz-btn" class="icon-button" title="Examen Oral (Quizz)">
+                            💡 Quizz
+                        </button>
+                        <button id="search-btn" class="icon-button" aria-label="Căutare" title="Caută în carte">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </button>
+                    </div>
+                    <button id="theme-toggle" class="icon-button" aria-label="Comută tema" title="Schimbă tema (Light/Dark)">
+                        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <div id="welcome-view" class="view active">
+                    <h2>Bun venit!</h2>
+                    <p>Selectează un capitol din meniul din stânga pentru a începe lectura.</p>
+                </div>
+                
+                <div id="search-view" class="view hidden">
+                    <h2 class="search-title">Caută în carte</h2>
+                    <div class="search-input-container">
+                        <input type="text" id="search-input" placeholder="Introdu un cuvânt cheie (ex: UDP, ruter, protocol)..." autocomplete="off">
+                    </div>
+                    <div id="search-results" class="search-results">
+                        <!-- Search results will be injected here -->
+                    </div>
+                </div>
+
+                <article id="reader-view" class="view hidden">
+                    <div class="chapter-meta">
+                        <span id="read-time">⏱️ Timp estimat: 1 min</span>
+                    </div>
+                    <h1 id="reader-title">Titlu Capitol</h1>
+                    <div id="reader-body">
+                        <!-- Content goes here -->
+                    </div>
+                    <div class="chapter-actions">
+                        <button id="mark-read-btn" class="action-btn unread-style">
+                            <span class="btn-icon">⭕</span> 
+                            <span class="btn-text">Marchează ca citit</span>
+                        </button>
+                    </div>
+                    <div class="chapter-navigation">
+                        <button id="prev-chapter-btn" class="nav-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                            Capitolul Anterior
+                        </button>
+                        <button id="next-chapter-btn" class="nav-btn">
+                            Capitolul Următor
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Quizz View -->
+                <article id="quizz-view" class="view hidden">
+                    <div class="quizz-container">
+                        <div class="quizz-header">
+                            <h2 id="quizz-title">Pregătire Examen Oral</h2>
+                            <div style="display: flex; gap: 8px; margin-left: auto; margin-right: 16px;">
+                                <button id="open-overview-btn" class="nav-btn" title="Harta Întrebărilor">
+                                    <span class="btn-icon">🗺️</span>
+                                    <span class="btn-text">Harta</span>
+                                </button>
+                                <button id="add-quizz-btn" class="nav-btn" title="Adaugă Întrebare">
+                                    <span class="btn-icon">➕</span>
+                                    <span class="btn-text">Adaugă</span>
+                                </button>
+                            </div>
+                            <span id="quizz-progress">Întrebarea 1/10</span>
+                        </div>
+                        <div class="quizz-card">
+                            <p id="quizz-question" class="quizz-question-text">Întrebarea se încarcă...</p>
+                            <div id="quizz-options" class="quizz-options">
+                                <!-- Opțiunile vor fi injectate aici -->
+                            </div>
+                        </div>
+                        <div id="quizz-feedback" class="quizz-feedback hidden">
+                            <p id="quizz-explanation">Explicație</p>
+                            <button id="quizz-goto-chapter" class="action-btn">🔍 Recitește în Capitol</button>
+                        </div>
+                        <div class="quizz-footer" style="display: flex; gap: 16px; justify-content: space-between;">
+                            <button id="quizz-prev-btn" class="nav-btn hidden">⬅️ Anterioara</button>
+                            <button id="quizz-next-btn" class="nav-btn primary hidden" style="margin-left:auto;">Următoarea Întrebare ➡️</button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <script src="chapters.js" defer></script>
+    <script src="quizzes.js" defer></script>
+    <script src="script.js" defer></script>
+
+    <!-- Add Quizz Modal -->
+    <div id="add-quizz-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Adaugă o Întrebare Nouă</h2>
+            <div class="form-group">
+                <label>Întrebarea:</label>
+                <textarea id="custom-q-text" rows="3" placeholder="Scrie întrebarea aici..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Opțiuni (selectează corectă din stânga):</label>
+                <div class="option-input-row"><input type="radio" name="correct-opt" value="0" checked> <input type="text" id="opt-0" placeholder="Opțiunea 1"></div>
+                <div class="option-input-row"><input type="radio" name="correct-opt" value="1"> <input type="text" id="opt-1" placeholder="Opțiunea 2"></div>
+                <div class="option-input-row"><input type="radio" name="correct-opt" value="2"> <input type="text" id="opt-2" placeholder="Opțiunea 3"></div>
+                <div class="option-input-row"><input type="radio" name="correct-opt" value="3"> <input type="text" id="opt-3" placeholder="Opțiunea 4"></div>
+            </div>
+            <div class="form-group">
+                <label>Explicație Răspuns (opțional):</label>
+                <textarea id="custom-q-expl" rows="2" placeholder="De ce este corect răspunsul..."></textarea>
+            </div>
+            <button id="save-custom-quizz-btn" class="primary-btn" style="width: 100%; margin-top: 8px;">Salvează Întrebarea</button>
+
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--surface-border);">
+                <h3 style="margin-bottom: 8px; font-size: 1rem;">Sau importă mai multe din fișier (JSON)</h3>
+                <input type="file" id="import-json-file" accept=".json" style="margin-bottom: 8px; width: 100%; color: var(--text-primary);">
+                <button id="import-json-btn" class="action-btn" style="width: 100%;">Încarcă JSON</button>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 8px;">
+                    Format aşteptat: <br><code style="background: rgba(0,0,0,0.1); padding: 4px; border-radius: 4px; display: block; margin-top: 4px;">[{"question": "Q", "options": ["A", "B", "C", "D"], "correctIndex": 0, "explanation": "Explicație"}]</code>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overview Modal -->
+    <div id="overview-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" id="close-overview-modal">&times;</span>
+            <h2 style="margin-bottom: 16px;">Harta Întrebărilor</h2>
+            <div id="quizz-overview" class="quizz-overview" style="max-height: 50vh; margin-bottom: 0;">
+                <!-- Grid-ul va fi generat automat aici -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
