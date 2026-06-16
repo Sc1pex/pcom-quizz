@@ -104,25 +104,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mark as read functionality
     markReadBtn.addEventListener('click', () => {
         if (currentIndex === -1) return;
-        const btnIcon = markReadBtn.querySelector('.btn-icon');
         const btnText = markReadBtn.querySelector('.btn-text');
 
         if (!readChapters.includes(currentIndex)) {
-            // Mark as read
             readChapters.push(currentIndex);
             localStorage.setItem('readChapters', JSON.stringify(readChapters));
             currentActiveButton.classList.add('read');
-            
-            btnIcon.textContent = '✅';
             btnText.textContent = 'Citit (Click pt a anula)';
             markReadBtn.classList.add('active');
         } else {
-            // Unmark
             readChapters = readChapters.filter(id => id !== currentIndex);
             localStorage.setItem('readChapters', JSON.stringify(readChapters));
             currentActiveButton.classList.remove('read');
-            
-            btnIcon.textContent = '⭕';
             btnText.textContent = 'Marchează ca citit';
             markReadBtn.classList.remove('active');
         }
@@ -131,50 +124,176 @@ document.addEventListener('DOMContentLoaded', () => {
     // TTS Functionality
     const ttsBtn = document.getElementById('tts-btn');
     const ttsAudio = document.getElementById('tts-audio');
+    const ttsMenu = document.getElementById('tts-floating-menu');
+    const ttsCloseBtn = document.getElementById('tts-close-btn');
+    const ttsVoice = document.getElementById('tts-voice');
+    const ttsSpeed = document.getElementById('tts-speed');
+    const ttsPlayPauseBtn = document.getElementById('tts-play-pause-btn');
+    const ttsIconPlay = document.getElementById('tts-icon-play');
+    const ttsIconPause = document.getElementById('tts-icon-pause');
+    const ttsProgress = document.getElementById('tts-progress');
+    const ttsCurrentTime = document.getElementById('tts-current-time');
+    const ttsDuration = document.getElementById('tts-duration');
+    const ttsLoading = document.getElementById('tts-loading');
 
-    if (ttsBtn && ttsAudio) {
-        ttsBtn.addEventListener('click', async () => {
-            const btnText = ttsBtn.querySelector('.btn-text');
-            const originalText = 'Ascultă Audio';
-            
-            let textToRead = readerBody.innerText.trim();
+    let currentTtsText = '';
+    let currentAudioUrl = null;
+
+    function formatTime(sec) {
+        if (!sec || isNaN(sec)) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function setTtsPlaying(playing) {
+        if (playing) {
+            ttsIconPlay.classList.add('hidden');
+            ttsIconPause.classList.remove('hidden');
+        } else {
+            ttsIconPlay.classList.remove('hidden');
+            ttsIconPause.classList.add('hidden');
+        }
+    }
+
+    async function fetchAndPlayTTS() {
+        if (!currentTtsText) return;
+        const voice = ttsVoice.value;
+        const speed = parseFloat(ttsSpeed.value);
+
+        ttsPlayPauseBtn.disabled = true;
+        ttsLoading.classList.remove('hidden');
+        setTtsPlaying(false);
+
+        try {
+            const res = await fetch('/api/tts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: currentTtsText, voice: voice })
+            });
+            if (!res.ok) throw new Error('API responded with ' + res.status);
+
+            const blob = await res.blob();
+            if (currentAudioUrl) URL.revokeObjectURL(currentAudioUrl);
+            currentAudioUrl = URL.createObjectURL(blob);
+
+            ttsAudio.src = currentAudioUrl;
+            ttsAudio.playbackRate = speed;
+            await ttsAudio.play();
+            setTtsPlaying(true);
+        } catch (err) {
+            console.error(err);
+            alert('Eroare la generarea audio. Asigură-te că serverul rulează și ai conexiune la internet.');
+        } finally {
+            ttsPlayPauseBtn.disabled = false;
+            ttsLoading.classList.add('hidden');
+        }
+    }
+
+    if (ttsBtn && ttsAudio && ttsMenu) {
+        // Open panel and start playback
+        ttsBtn.addEventListener('click', () => {
+            const textToRead = readerBody.innerText.trim();
             if (!textToRead) return;
-            
-            // Basic cleanup for TTS engine
-            textToRead = textToRead.replace(/\n\s*\n/g, '\n').substring(0, 20000); // 20k chars safety
-            
-            btnText.textContent = 'Se generează...';
-            ttsBtn.disabled = true;
-            ttsBtn.style.opacity = '0.5';
-            ttsAudio.classList.add('hidden');
-            ttsAudio.pause();
-            
-            try {
-                const res = await fetch('/api/tts', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: textToRead })
-                });
-                
-                if (!res.ok) throw new Error("API responded with " + res.status);
-                
-                const blob = await res.blob();
-                const audioUrl = URL.createObjectURL(blob);
-                ttsAudio.src = audioUrl;
-                ttsAudio.classList.remove('hidden');
-                ttsAudio.play();
-                btnText.textContent = 'Audio Pregătit';
-            } catch (err) {
-                console.error(err);
-                alert("Eroare la generarea audio. Asigură-te că rulezi proiectul prin Docker / Python și ai conexiune la net.");
-                btnText.textContent = originalText;
-            } finally {
-                ttsBtn.disabled = false;
-                ttsBtn.style.opacity = '1';
-                setTimeout(() => { 
-                    if (btnText.textContent === 'Audio Pregătit') btnText.textContent = originalText; 
-                }, 3000);
+            currentTtsText = textToRead.replace(/\n\s*\n/g, '\n').substring(0, 20000);
+            ttsMenu.classList.remove('hidden');
+            fetchAndPlayTTS();
+        });
+
+        // Play / Pause toggle
+        ttsPlayPauseBtn.addEventListener('click', () => {
+            if (ttsAudio.paused || ttsAudio.ended) {
+                if (!ttsAudio.src || ttsAudio.ended) {
+                    fetchAndPlayTTS();
+                } else {
+                    ttsAudio.play();
+                    setTtsPlaying(true);
+                }
+            } else {
+                ttsAudio.pause();
+                setTtsPlaying(false);
             }
+        });
+
+        // Close
+        ttsCloseBtn.addEventListener('click', () => {
+            ttsAudio.pause();
+            setTtsPlaying(false);
+            ttsMenu.classList.add('hidden');
+        });
+
+        // Seek bar – update as audio plays
+        ttsAudio.addEventListener('timeupdate', () => {
+            if (ttsAudio.duration) {
+                ttsProgress.value = (ttsAudio.currentTime / ttsAudio.duration) * 100;
+                ttsCurrentTime.textContent = formatTime(ttsAudio.currentTime);
+            }
+        });
+
+        // Seek bar – jump to position
+        ttsProgress.addEventListener('input', () => {
+            if (ttsAudio.duration) {
+                ttsAudio.currentTime = (ttsProgress.value / 100) * ttsAudio.duration;
+            }
+        });
+
+        // Show total duration once metadata loads
+        ttsAudio.addEventListener('loadedmetadata', () => {
+            ttsDuration.textContent = formatTime(ttsAudio.duration);
+        });
+
+        // Reset icon when finished
+        ttsAudio.addEventListener('ended', () => {
+            setTtsPlaying(false);
+            ttsProgress.value = 0;
+            ttsCurrentTime.textContent = '0:00';
+        });
+
+        // Speed change (no re-fetch needed, just apply live)
+        ttsSpeed.addEventListener('change', () => {
+            ttsAudio.playbackRate = parseFloat(ttsSpeed.value);
+        });
+
+        // Voice change – re-generate with new voice
+        ttsVoice.addEventListener('change', () => {
+            fetchAndPlayTTS();
+        });
+
+        // Draggable panel
+        let isDragging = false;
+        let startX, startY, startLeft, startBottom;
+
+        const dragHandle = document.getElementById('tts-drag-handle');
+
+        dragHandle.addEventListener('mousedown', (e) => {
+            // Don't drag if clicking the close button
+            if (e.target === ttsCloseBtn) return;
+            isDragging = true;
+            const rect = ttsMenu.getBoundingClientRect();
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = rect.left;
+            startBottom = window.innerHeight - rect.bottom;
+            ttsMenu.style.right = 'auto';
+            ttsMenu.style.bottom = 'auto';
+            ttsMenu.style.left = startLeft + 'px';
+            ttsMenu.style.top = rect.top + 'px';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            ttsMenu.style.left = (startLeft + dx) + 'px';
+            ttsMenu.style.top = (parseFloat(ttsMenu.style.top) + dy) + 'px';
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = parseFloat(ttsMenu.style.left);
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
         });
     }
 
@@ -272,14 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
         nextBtn.disabled = index === chaptersData.length - 1;
         
         // Update Read Status
-        const btnIcon = markReadBtn.querySelector('.btn-icon');
         const btnText = markReadBtn.querySelector('.btn-text');
         if (readChapters.includes(index)) {
-            btnIcon.textContent = '✅';
             btnText.textContent = 'Citit (Click pt a anula)';
             markReadBtn.classList.add('active');
         } else {
-            btnIcon.textContent = '⭕';
             btnText.textContent = 'Marchează ca citit';
             markReadBtn.classList.remove('active');
         }
@@ -317,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Estimate reading time
             const words = chapter.html.replace(/<[^>]*>?/gm, '').split(/\s+/).length;
             const minutes = Math.max(1, Math.ceil(words / 200));
-            readTimeEl.innerHTML = `⏱️ Timp estimat: <strong>${minutes} min</strong>`;
+            readTimeEl.innerHTML = `Timp estimat: <strong>${minutes} min</strong>`;
             
             // Scroll to top
             mainContent.scrollTop = 0;
@@ -491,10 +607,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (currentQuizzIndex < combinedQuizzes.length - 1) {
             quizzNextBtn.classList.remove('hidden');
-            quizzNextBtn.textContent = "Următoarea Întrebare ➡️";
+            quizzNextBtn.textContent = "Următoarea Întrebare";
         } else {
             quizzNextBtn.classList.remove('hidden');
-            quizzNextBtn.textContent = "Reîncepe Quizz-ul 🔄";
+            quizzNextBtn.textContent = "Reîncepe Quizz-ul";
         }
     }
 

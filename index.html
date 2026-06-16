@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rețele de Calculatoare - Cititor</title>
+    <meta name="description" content="Cititor interactiv pentru cursul de Rețele de Calculatoare (PCOM). Capitole, quiz-uri și ascultare audio.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,7 +12,7 @@
     <div id="app" class="app-container">
         <aside id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <h1>📚 Rețele</h1>
+                <h1>Rețele</h1>
             </div>
             <nav id="chapter-list" class="chapter-list">
                 <!-- Chapters will be injected here -->
@@ -25,19 +26,17 @@
                 </div>
                 <div class="top-bar">
                     <button id="toggle-sidebar" class="icon-button" aria-label="Afișează/Ascunde meniul" title="Ascunde capitolele">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
                     <div class="top-actions">
-                        <button id="quizz-btn" class="icon-button" title="Examen Oral (Quizz)">
-                            💡 Quizz
-                        </button>
+                        <button id="quizz-btn" class="icon-button" title="Examen Oral (Quizz)">Quizz</button>
                         <button id="search-btn" class="icon-button" aria-label="Căutare" title="Caută în carte">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                         </button>
                     </div>
                     <button id="theme-toggle" class="icon-button" aria-label="Comută tema" title="Schimbă tema (Light/Dark)">
-                        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     </button>
                 </div>
             </div>
@@ -60,7 +59,7 @@
 
                 <article id="reader-view" class="view hidden">
                     <div class="chapter-meta">
-                        <span id="read-time">⏱️ Timp estimat: 1 min</span>
+                        <span id="read-time">Timp estimat: 1 min</span>
                     </div>
                     <h1 id="reader-title">Titlu Capitol</h1>
                     <div id="reader-body">
@@ -68,15 +67,13 @@
                     </div>
                     <div class="chapter-actions">
                         <button id="mark-read-btn" class="action-btn unread-style">
-                            <span class="btn-icon">⭕</span> 
                             <span class="btn-text">Marchează ca citit</span>
                         </button>
                         <button id="tts-btn" class="action-btn" title="Ascultă capitolul audio" style="margin-left: 12px;">
-                            <span class="btn-icon">🔊</span> 
                             <span class="btn-text">Ascultă Audio</span>
                         </button>
                     </div>
-                    <audio id="tts-audio" class="hidden" controls style="width: 100%; margin-top: 16px; border-radius: 8px;"></audio>
+                    <audio id="tts-audio" class="hidden"></audio>
                     <div class="chapter-navigation">
                         <button id="prev-chapter-btn" class="nav-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
@@ -95,14 +92,8 @@
                         <div class="quizz-header">
                             <h2 id="quizz-title">Pregătire Examen Oral</h2>
                             <div style="display: flex; gap: 8px; margin-left: auto; margin-right: 16px;">
-                                <button id="open-overview-btn" class="nav-btn" title="Harta Întrebărilor">
-                                    <span class="btn-icon">🗺️</span>
-                                    <span class="btn-text">Harta</span>
-                                </button>
-                                <button id="add-quizz-btn" class="nav-btn" title="Adaugă Întrebare">
-                                    <span class="btn-icon">➕</span>
-                                    <span class="btn-text">Adaugă</span>
-                                </button>
+                                <button id="open-overview-btn" class="nav-btn" title="Harta Întrebărilor">Hartă</button>
+                                <button id="add-quizz-btn" class="nav-btn" title="Adaugă Întrebare">Adaugă</button>
                             </div>
                             <span id="quizz-progress">Întrebarea 1/10</span>
                         </div>
@@ -114,11 +105,11 @@
                         </div>
                         <div id="quizz-feedback" class="quizz-feedback hidden">
                             <p id="quizz-explanation">Explicație</p>
-                            <button id="quizz-goto-chapter" class="action-btn">🔍 Recitește în Capitol</button>
+                            <button id="quizz-goto-chapter" class="action-btn">Recitește în Capitol</button>
                         </div>
                         <div class="quizz-footer" style="display: flex; gap: 16px; justify-content: space-between;">
-                            <button id="quizz-prev-btn" class="nav-btn hidden">⬅️ Anterioară</button>
-                            <button id="quizz-next-btn" class="nav-btn primary hidden" style="margin-left:auto;">Următoarea Întrebare ➡️</button>
+                            <button id="quizz-prev-btn" class="nav-btn hidden">Anterioară</button>
+                            <button id="quizz-next-btn" class="nav-btn primary hidden" style="margin-left:auto;">Următoarea Întrebare</button>
                         </div>
                     </div>
                 </article>
@@ -173,5 +164,57 @@
             </div>
         </div>
     </div>
+
+    <!-- Floating TTS Panel -->
+    <div id="tts-floating-menu" class="floating-tts hidden">
+        <div class="tts-header" id="tts-drag-handle">
+            <span class="tts-title">Control Audio</span>
+            <button id="tts-close-btn" class="tts-close-btn" aria-label="Închide">&times;</button>
+        </div>
+        <div class="tts-controls">
+            <!-- Seek bar -->
+            <div class="tts-seek-section">
+                <div class="tts-time-row">
+                    <span id="tts-current-time">0:00</span>
+                    <span id="tts-duration">0:00</span>
+                </div>
+                <input type="range" id="tts-progress" class="tts-seek-bar" min="0" max="100" value="0" step="0.1">
+            </div>
+
+            <!-- Play/Pause button -->
+            <div class="tts-playback-row">
+                <button id="tts-play-pause-btn" class="tts-play-btn" aria-label="Redă/Pauză">
+                    <svg id="tts-icon-play" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <svg id="tts-icon-pause" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="hidden"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                </button>
+                <div class="tts-settings">
+                    <div class="tts-setting-item">
+                        <label for="tts-voice">Voce</label>
+                        <select id="tts-voice">
+                            <option value="ro-RO-EmilNeural">Emil</option>
+                            <option value="ro-RO-AlinaNeural">Alina</option>
+                        </select>
+                    </div>
+                    <div class="tts-setting-item">
+                        <label for="tts-speed">Viteză</label>
+                        <select id="tts-speed">
+                            <option value="0.75">0.75×</option>
+                            <option value="1.0" selected>1.0×</option>
+                            <option value="1.25">1.25×</option>
+                            <option value="1.5">1.5×</option>
+                            <option value="2.0">2.0×</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="tts-loading" class="tts-loading hidden">
+                <div class="tts-spinner"></div>
+                <span>Se generează audio...</span>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

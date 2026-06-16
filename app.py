@@ -173,18 +173,19 @@ def delete_quiz(quiz_id):
 def generate_tts():
     data = request.json
     text = data.get('text', '')
+    voice = data.get('voice', 'ro-RO-EmilNeural')
     if not text:
         return jsonify({'error': 'No text provided'}), 400
         
-    # Generate unique filename based on hash of the text
-    text_hash = hashlib.md5(text.encode('utf-8')).hexdigest()
+    # Generate unique filename based on hash of the voice and text
+    text_hash = hashlib.md5(f"{voice}_{text}".encode('utf-8')).hexdigest()
     os.makedirs('tts_cache', exist_ok=True)
     filename = os.path.join('tts_cache', f'{text_hash}.mp3')
     
     if not os.path.exists(filename):
         # Generate using edge-tts
         try:
-            subprocess.run(["edge-tts", "--voice", "ro-RO-EmilNeural", "--text", text, "--write-media", filename], check=True)
+            subprocess.run(["edge-tts", "--voice", voice, "--text", text, "--write-media", filename], check=True)
         except subprocess.CalledProcessError as e:
             return jsonify({'error': 'TTS generation failed'}), 500
             
