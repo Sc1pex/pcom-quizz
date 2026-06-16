@@ -128,6 +128,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // TTS Functionality
+    const ttsBtn = document.getElementById('tts-btn');
+    const ttsAudio = document.getElementById('tts-audio');
+
+    if (ttsBtn && ttsAudio) {
+        ttsBtn.addEventListener('click', async () => {
+            const btnText = ttsBtn.querySelector('.btn-text');
+            const originalText = 'Ascultă Audio';
+            
+            let textToRead = readerBody.innerText.trim();
+            if (!textToRead) return;
+            
+            // Basic cleanup for TTS engine
+            textToRead = textToRead.replace(/\n\s*\n/g, '\n').substring(0, 20000); // 20k chars safety
+            
+            btnText.textContent = 'Se generează...';
+            ttsBtn.disabled = true;
+            ttsBtn.style.opacity = '0.5';
+            ttsAudio.classList.add('hidden');
+            ttsAudio.pause();
+            
+            try {
+                const res = await fetch('/api/tts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: textToRead })
+                });
+                
+                if (!res.ok) throw new Error("API responded with " + res.status);
+                
+                const blob = await res.blob();
+                const audioUrl = URL.createObjectURL(blob);
+                ttsAudio.src = audioUrl;
+                ttsAudio.classList.remove('hidden');
+                ttsAudio.play();
+                btnText.textContent = 'Audio Pregătit';
+            } catch (err) {
+                console.error(err);
+                alert("Eroare la generarea audio. Asigură-te că rulezi proiectul prin Docker / Python și ai conexiune la net.");
+                btnText.textContent = originalText;
+            } finally {
+                ttsBtn.disabled = false;
+                ttsBtn.style.opacity = '1';
+                setTimeout(() => { 
+                    if (btnText.textContent === 'Audio Pregătit') btnText.textContent = originalText; 
+                }, 3000);
+            }
+        });
+    }
+
     // Navigation buttons
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
@@ -248,6 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Auto-collapse sidebar on mobile after selecting a chapter
         if (window.innerWidth <= 768) {
             sidebar.classList.add('collapsed');
+        }
+        
+        // Reset TTS
+        if (ttsAudio) {
+            ttsAudio.pause();
+            ttsAudio.classList.add('hidden');
         }
         
         setTimeout(() => {
